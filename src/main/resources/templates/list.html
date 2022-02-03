@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all authors</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .blok-1, .blok-2 {
+            display: flex;
+            flex-flow: row wrap;
+        }
+
+        .blok-book, .blok-comment, .blok-author, .blok-genre {
+          flex: 1;
+        }
+
+        .book, .author, .genre, .comment, .book td, .author td, .genre td, .comment td {
+            border: 1px solid blue;
+            padding: 5px;
+            text-align:center;
+        }
+
+        .auth {
+            text-align:right;
+        }
+
+        .btn {
+            color: white;
+            text-align: center;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+        }
+
+        .button {
+            color: white;
+            text-align: center;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+        }
+
+        .btn_edit {
+           background-color: #008CBA;
+        }
+
+        .btn_delete {
+           background-color: #f44336;
+        }
+
+        .btn_add {
+           padding: 5px 10px;
+           background-color: #4CAF50;
+        }
+
+        .btn_logout {
+           padding: 5px 10px;
+           background-color: #808080;
+        }
+
+        .button2:hover {
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth">
+        <h1 th:inline="text">Hello, [[${#httpServletRequest.remoteUser}]]!</h1>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" class="button btn_logout" value="Sign Out"/>
+        </form>
+    </div>
+
+
+<div class="blok-common">
+    <h1>LIBRARY</h1>
+    <div class="blok-1">
+        <div class="blok-book">
+            <h1>Books:</h1>
+            <a th:href="@{/edit_book/{id}(id = 0)}" href="edit_book.html"><button class = "button btn_add">Add</button></a>
+            <table class="book">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book : ${book}">
+                    <td th:text="${book.id}"/>
+                    <td th:text="${book.name}"/>
+                    <td th:text="${book.authorName}"/>
+                    <td th:text="${book.genreName}"/>
+                    <td>
+                        <a th:href="@{/edit_book/{id}(id = ${book.id})}" href="edit_book.html"><button class = "button btn_edit">Edit</button></a>
+                        <button class = "button btn_delete" th:with="url = @{/delete_book/{id}(id = ${book.id})}" th:onclick="sendDelete([[${url}]])">Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="blok-comment">
+            <h1>Comments:</h1>
+            <a th:href="@{/edit_comment/{id}(id = 0)}" href="edit_comment.html"><button class = "button btn_add">Add</button></a>
+            <table class="comment">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Comment</th>
+                    <th>Book</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="comment : ${comment}">
+                    <td th:text="${comment.id}"/>
+                    <td th:text="${comment.comment}"/>
+                    <td th:text="${comment.bookName}"/>
+                    <td>
+                        <a th:href="@{/edit_comment/{id}(id = ${comment.id})}" href="edit_comment.html"><button class = "button btn_edit">Edit</button></a>
+                        <button class = "button btn_delete" th:with="url = @{/delete_comment/{id}(id = ${comment.id})}" th:onclick="sendDelete([[${url}]])">Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="blok-2">
+        <div class="blok-author">
+            <h1>Authors:</h1>
+            <a th:href="@{/edit_author/{id}(id = 0)}" href="edit_author.html"><button class = "button btn_add">Add</button></a>
+            <table class="author">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="author : ${author}">
+                    <td th:text="${author.id}"/>
+                    <td th:text="${author.name}"/>
+                    <td>
+                        <a th:href="@{/edit_author/{id}(id = ${author.id})}" href="edit_author.html"><button class = "button btn_edit">Edit</button></a>
+                        <button class = "button btn_delete" th:with="url = @{/delete_author/{id}(id = ${author.id})}" th:onclick="sendDelete([[${url}]])">Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="blok-genre">
+            <h1>Genres:</h1>
+            <a th:href="@{/edit_genre/{id}(id = 0)}" href="edit_genre.html"><button class = "button btn_add">Add</button></a>
+            <table class="genre">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="genre : ${genre}">
+                    <td th:text="${genre.id}"/>
+                    <td th:text="${genre.name}"/>
+                    <td>
+                        <a th:href="@{/edit_genre/{id}(id = ${genre.id})}" href="edit_genre.html"><button class = "button btn_edit">Edit</button></a>
+                        <button class = "button btn_delete" th:with="url = @{/delete_genre/{id}(id = ${genre.id})}" th:onclick="sendDelete([[${url}]])">Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+<script th:inline="javascript">
+    function sendDelete(url) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("DELETE", url, true);
+        xhttp.onload = function () {
+            let responseURL = xhttp.responseURL;
+            console.log("Redirecting to:", responseURL);
+            window.location.replace(responseURL);
+        };
+        xhttp.send();
+    }
+    function deleteBook(url) {
+         var isOK = confirm("Are you sure to delete?");
+         if(isOK)
+         {
+           go(url);
+          }
+     }
+</script>
+</body>
+</html>
+
