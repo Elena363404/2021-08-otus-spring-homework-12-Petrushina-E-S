@@ -1,7 +1,10 @@
 package ru.otus.elena363404.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.otus.elena363404.domain.User;
 import ru.otus.elena363404.repository.UserRepository;
@@ -9,16 +12,15 @@ import ru.otus.elena363404.repository.UserRepository;
 import java.util.Optional;
 
 @Service
-public class UserDetailsServiceImpl implements UserService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
   @Autowired
   private UserRepository userRepository;
 
   @Override
-  public Optional<User> findUserByUsername(String username)
+  public UserDetails loadUserByUsername(String username)
     throws UsernameNotFoundException {
     Optional<User> user = userRepository.findUserByUsername(username);
-    user.orElseThrow(() -> new UsernameNotFoundException("User not present"));
-    return user;
+    return user.orElseThrow(() -> new RuntimeException("User not found!"));
   }
 }
