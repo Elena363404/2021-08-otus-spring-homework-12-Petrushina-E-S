@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Override
     public void configure( HttpSecurity http ) throws Exception {
@@ -42,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configure( AuthenticationManagerBuilder auth) throws Exception {
 
-        auth.userDetailsService(customUserDetailsService);
+        auth.userDetailsService(userDetailsService);
     }
 
 }
